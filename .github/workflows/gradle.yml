@@ -1,0 +1,85 @@
+name: Gateway server CI/CD with gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set Yaml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application.yml
+        env:
+          spring.config.import: ${{ secrets.CONFIG_SERVER_URL }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Build docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest -f Dockerfile .
+
+      - name: login Docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push docker hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
+
+  run-docker-image-on-ec2:
+    needs: build-docker-image
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull image from docker hub
+        run: |
+          sudo docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
+
+      - name: Check if container is running
+        id: check-container
+        run: |
+          if sudo docker ps -a | grep -q gateway-server; then
+            echo "gateway-server-running=true" >> $GITHUB_OUTPUT
+          else
+            echo "gateway-server-running=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Stop and remove container
+        if: steps.check-container.outputs.gateway-server-running == 'true'
+        run: sudo docker stop gateway-server
+
+      - name: Run new docker container
+        run: sudo docker run -d --name gateway-server --rm -p 8000:8000 --net cheonma-network ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
+
+      - name: Delete old docker image
+        run: sudo docker system prune -f
