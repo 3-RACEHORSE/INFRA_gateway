@@ -2,4 +2,4 @@ spring:
   application:
     name: gateway-server
   config:
-    import: ${config-server}
+    import: optional:configserver:http://43.203.131.185:8071
