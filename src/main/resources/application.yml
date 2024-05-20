@@ -3,3 +3,6 @@ spring:
     name: gateway-server
   config:
     import: optional:configserver:http://43.203.131.185:8071
+
+encrypt:
+  key: ${ENCRYPT_KEY}
