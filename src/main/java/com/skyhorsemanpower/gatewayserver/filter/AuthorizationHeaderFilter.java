@@ -43,7 +43,7 @@ public class AuthorizationHeaderFilter extends
 
             String authorizationHeader = headers.get(HttpHeaders.AUTHORIZATION).get(0);
 
-            String jwt = authorizationHeader.replace("Bearer", "");
+            String jwt = authorizationHeader.replace("Bearer ", "");
 
             jwtTokenProvider.validateJwtToken(jwt);
 
