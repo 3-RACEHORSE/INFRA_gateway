@@ -20,6 +20,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Set Yaml
         uses: microsoft/variable-substitution@v1
         with:
@@ -43,21 +49,18 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Build docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest -f Dockerfile .
-
       - name: login Docker
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Push docker hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
+      - name: Build docker image
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest --push -f Dockerfile .
 
   run-docker-image-on-ec2:
     needs: build-docker-image
-    runs-on: self-hosted
+    runs-on: new-runner
 
     steps:
       - name: Pull image from docker hub
