@@ -2,7 +2,7 @@ spring:
   application:
     name: gateway-server
   config:
-    import: ${CONFIG_SERVER_URL}
+    import: optional:configserver:${CONFIG_SERVER_URL}
 
 encrypt:
   key: ${ENCRYPT_KEY}
