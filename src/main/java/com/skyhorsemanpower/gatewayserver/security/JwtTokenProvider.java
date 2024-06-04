@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,9 @@ public class JwtTokenProvider {
 
     public void validateJwtToken(String token) {
         try {
+            log.info("SECRET of bytes >>>>> ", SECRET.getBytes(StandardCharsets.UTF_8));
             Jwts.parserBuilder()
-                .setSigningKey(SECRET.getBytes())
+                .setSigningKey(SECRET.getBytes(StandardCharsets.UTF_8))
                 .build()
                 .parseClaimsJws(token);
         } catch (SignatureException e) {
