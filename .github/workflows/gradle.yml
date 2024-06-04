@@ -25,6 +25,7 @@ jobs:
         with:
           files: ./src/main/resources/application.yml
         env:
+          spring.config.import: ${{secrets.CONFIG_SERVER_URL}}
           encrypt.key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Grant execute permission for gradlew
