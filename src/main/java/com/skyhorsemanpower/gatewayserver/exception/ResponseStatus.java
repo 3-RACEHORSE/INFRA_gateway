@@ -18,7 +18,8 @@ public enum ResponseStatus {
     DAMAGED_TOKEN(401, "손상된 토큰입니다."),
     UNSUPPORTED_TOKEN(401, "지원하지 않는 토큰입니다."),
     EXPIRED_TOKEN(401, "만료된 토큰입니다."),
-    INVALID_TOKEN(401, "잘못된 토큰입니다.");
+    INVALID_TOKEN(401, "잘못된 토큰입니다."),
+    VERIFICATION_FAILED(401, "검증에 실패한 토큰입니다.");
 
     private final int code;
     private final String message;
