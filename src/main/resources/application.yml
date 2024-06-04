@@ -2,7 +2,7 @@ spring:
   application:
     name: gateway-server
   config:
-    import: optional:configserver:http://52.79.127.196:8071
+    import: ${CONFIG_SERVER_URL}
 
 encrypt:
   key: ${ENCRYPT_KEY}
