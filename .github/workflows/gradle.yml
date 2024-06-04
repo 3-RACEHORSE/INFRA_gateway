@@ -57,6 +57,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
 
   run-docker-image-on-ec2:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build-docker-image
     runs-on: new-runner
 
