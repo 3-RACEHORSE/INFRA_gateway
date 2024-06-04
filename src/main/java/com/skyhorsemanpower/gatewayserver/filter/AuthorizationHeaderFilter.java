@@ -1,6 +1,5 @@
 package com.skyhorsemanpower.gatewayserver.filter;
 
-import com.skyhorsemanpower.gatewayserver.filter.AuthorizationHeaderFilter.Config;
 import com.skyhorsemanpower.gatewayserver.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import reactor.core.publisher.Mono;
 @Component
 @Slf4j
 public class AuthorizationHeaderFilter extends
-    AbstractGatewayFilterFactory<Config> {
+    AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
 
     private final JwtTokenProvider jwtTokenProvider;
 
