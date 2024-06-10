@@ -4,15 +4,11 @@ import com.skyhorsemanpower.gatewayserver.exception.CustomException;
 import com.skyhorsemanpower.gatewayserver.exception.ResponseStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
-import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +24,12 @@ public class JwtTokenProvider {
 
     private final Environment env;
 
-    @Value("${JWT.SECRET_KEY}")
+//    @Value("${JWT.SECRET_KEY}")
     private String SECRET;
 
     private Claims getClaimsFromJwtToken(String token) {
         try {
+            this.SECRET = env.getProperty("JWT.SECRET_KEY");
             return Jwts.parserBuilder()
                 .setSigningKey(SECRET.getBytes())
                 .build()
