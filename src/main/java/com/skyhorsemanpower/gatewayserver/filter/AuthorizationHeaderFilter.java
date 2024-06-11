@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class AuthorizationHeaderFilter extends
     AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public AuthorizationHeaderFilter(JwtTokenProvider jwtTokenProvider) {
