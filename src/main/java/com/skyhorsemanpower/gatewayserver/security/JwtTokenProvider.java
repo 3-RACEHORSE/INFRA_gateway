@@ -24,12 +24,12 @@ public class JwtTokenProvider {
 
     private final Environment env;
 
-//    @Value("${JWT.SECRET_KEY}")
+    @Value("${JWT.SECRET_KEY}")
     private String SECRET;
 
     private Claims getClaimsFromJwtToken(String token) {
         try {
-            this.SECRET = env.getProperty("JWT.SECRET_KEY");
+//            this.SECRET = env.getProperty("JWT.SECRET_KEY");
             return Jwts.parserBuilder()
                 .setSigningKey(SECRET.getBytes())
                 .build()
