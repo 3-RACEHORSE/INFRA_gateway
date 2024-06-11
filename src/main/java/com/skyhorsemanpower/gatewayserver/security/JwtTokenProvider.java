@@ -44,7 +44,7 @@ public class JwtTokenProvider {
 
     public void validateJwtToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
         } catch (SignatureException e) {
             throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
         } catch (MalformedJwtException e) {
