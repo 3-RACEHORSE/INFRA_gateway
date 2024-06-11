@@ -12,11 +12,9 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Date;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 @Slf4j
@@ -24,7 +22,7 @@ public class JwtTokenProvider {
 
     private Key key; // secret Key
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey
+    public JwtTokenProvider(@Value("${JWT.SECRET_KEY}") String secretKey
     ) {
         byte[] secretByteKey = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(secretByteKey);
