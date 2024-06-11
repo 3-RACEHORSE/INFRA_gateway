@@ -9,25 +9,16 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
-@Service
 @Slf4j
 public class JwtTokenProvider {
 
     @Value("${jwt.secret-key}")
     private String SECRET;
-
-//    @Autowired
-//    public JwtTokenProvider(@Value("${JWT.SECRET_KEY}") final String SECRET) {
-//        this.SECRET = SECRET;
-//    }
 
     private Claims getClaimsFromJwtToken(String token) {
         try {
