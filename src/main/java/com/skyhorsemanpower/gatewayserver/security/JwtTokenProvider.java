@@ -11,22 +11,21 @@ import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Component
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
 
-    private final Environment env;
+//    @Value("${JWT.SECRET_KEY}")
+    private final String SECRET;
 
-    @Value("${JWT.SECRET_KEY}")
-    private String SECRET;
+    public JwtTokenProvider(@Value("${JWT.SECRET_KEY}") String SECRET) {
+        this.SECRET = SECRET;
+    }
 
     private Claims getClaimsFromJwtToken(String token) {
         try {
