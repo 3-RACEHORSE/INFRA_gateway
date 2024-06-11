@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret-key}")
+    @Value("${JWT.SECRET_KEY}")
     private String SECRET;
 
     private Claims getClaimsFromJwtToken(String token) {
