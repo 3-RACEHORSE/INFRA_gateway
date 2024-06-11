@@ -7,7 +7,10 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import java.security.Key;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +19,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Component
-@Service
-@RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
 
-    @Value("${JWT.SECRET}")
-    private String SECRET;
+    private Key key; // secret Key
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey
+    ) {
+        byte[] secretByteKey = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(secretByteKey);
+    }
 
     private Claims getClaimsFromJwtToken(String token) {
         try {
-            return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+            return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
