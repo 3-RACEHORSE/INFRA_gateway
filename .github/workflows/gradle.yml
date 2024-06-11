@@ -23,6 +23,7 @@ jobs:
       - name: Set environment variables
         run: |
           echo "CONFIG_SERVER_URL=${{secrets.CONFIG_SERVER_URL}}" >> $GITHUB_ENV
+          echo "JWT_SECRET_KEY=${{secrets.JWT_SECRET_KEY}}" >> $GITHUB_ENV
           echo "ENCRYPT_KEY=${{secrets.ENCRYPT_KEY}}" >> $GITHUB_ENV
 
       - name: Substitute variables in application.yml
