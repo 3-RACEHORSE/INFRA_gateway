@@ -11,6 +11,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,10 @@ import org.springframework.stereotype.Service;
 public class JwtTokenProvider {
 
 //    @Value("${JWT.SECRET_KEY}")
-    private final String SECRET;
+    private String SECRET;
 
-    public JwtTokenProvider(@Value("${JWT.SECRET_KEY}") String SECRET) {
+    @Autowired
+    public JwtTokenProvider(@Value("${JWT.SECRET_KEY}") final String SECRET) {
         this.SECRET = SECRET;
     }
 
