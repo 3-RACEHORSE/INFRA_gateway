@@ -22,10 +22,7 @@ public class JwtTokenProvider {
 
     private Claims getClaimsFromJwtToken(String token) {
         try {
-            return Jwts.parserBuilder()
-                .setSigningKey(SECRET.getBytes())
-                .build()
-                .parseClaimsJws(token).getBody();
+            return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
