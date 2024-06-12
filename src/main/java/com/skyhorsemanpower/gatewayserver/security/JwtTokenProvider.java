@@ -25,20 +25,19 @@ public class JwtTokenProvider {
 
 	private final Environment env;
 
-	//    @Value("${JWT.SECRET_KEY}")
-	private String SECRET;
+    @Value("${JWT.SECRET_KEY}")
+    private String SECRET;
 
-	private Claims getClaimsFromJwtToken(String token) {
-		try {
-			this.SECRET = env.getProperty("JWT.SECRET_KEY");
-			return Jwts.parserBuilder()
-				.setSigningKey(SECRET.getBytes())
-				.build()
-				.parseClaimsJws(token).getBody();
-		} catch (ExpiredJwtException e) {
-			return e.getClaims();
-		}
-	}
+    private Claims getClaimsFromJwtToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(SECRET.getBytes())
+                .build()
+                .parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
 
 	public Date getExpiredTime(String token) {
 		return getClaimsFromJwtToken(token).getExpiration();

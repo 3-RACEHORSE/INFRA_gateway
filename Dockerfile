@@ -11,6 +11,8 @@ RUN java -Djarmode=layertools -jar *.jar extract --destination target/extracted
 FROM bellsoft/liberica-openjdk-alpine:17
 VOLUME /tmp
 ARG EXTRACTED=/workspace/app/target/extracted
+ARG KAFKA_BOOTSTRAP_SERVERS
+ENV KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
 
 # Copy over the unpacked application
 COPY --from=build ${EXTRACTED}/dependencies/ ./
