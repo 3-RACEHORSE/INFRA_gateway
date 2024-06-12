@@ -52,7 +52,6 @@ public class JwtTokenProvider {
 			if ("refresh".equals(tokenType)) {
 				throw new CustomException(ResponseStatus.JWT_FAIL_WITH_REFRESH);
 			}
-			Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
 		} catch (SignatureException e) {
 			throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
 		} catch (MalformedJwtException e) {
