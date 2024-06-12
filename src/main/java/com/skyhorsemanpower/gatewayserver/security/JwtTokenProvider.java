@@ -4,6 +4,7 @@ import com.skyhorsemanpower.gatewayserver.exception.CustomException;
 import com.skyhorsemanpower.gatewayserver.exception.ResponseStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JwtTokenProvider {
 
-    private final Environment env;
+	private final Environment env;
 
     @Value("${JWT.SECRET_KEY}")
     private String SECRET;
@@ -38,25 +39,30 @@ public class JwtTokenProvider {
         }
     }
 
-    public Date getExpiredTime(String token) {
-        return getClaimsFromJwtToken(token).getExpiration();
-    }
+	public Date getExpiredTime(String token) {
+		return getClaimsFromJwtToken(token).getExpiration();
+	}
 
-    public void validateJwtToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
-        } catch (SignatureException e) {
-            throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
-        } catch (MalformedJwtException e) {
-            throw new CustomException(ResponseStatus.DAMAGED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            throw new CustomException(ResponseStatus.UNSUPPORTED_TOKEN);
-        } catch (ExpiredJwtException e) {
-            throw new CustomException(ResponseStatus.EXPIRED_TOKEN);
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(ResponseStatus.INVALID_TOKEN);
-        } catch (RuntimeException e) {
-            throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
-        }
-    }
+	public void validateJwtToken(String token) {
+		try {
+			Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+			String tokenType = claimsJws.getBody().get("TokenType", String.class);
+			log.info("tokenType: {}", tokenType);
+			if ("refresh".equals(tokenType)) {
+				throw new CustomException(ResponseStatus.JWT_FAIL_WITH_REFRESH);
+			}
+		} catch (SignatureException e) {
+			throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
+		} catch (MalformedJwtException e) {
+			throw new CustomException(ResponseStatus.DAMAGED_TOKEN);
+		} catch (UnsupportedJwtException e) {
+			throw new CustomException(ResponseStatus.UNSUPPORTED_TOKEN);
+		} catch (ExpiredJwtException e) {
+			throw new CustomException(ResponseStatus.EXPIRED_TOKEN);
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ResponseStatus.INVALID_TOKEN);
+		} catch (RuntimeException e) {
+			throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
+		}
+	}
 }
