@@ -1,9 +1,8 @@
 package com.skyhorsemanpower.gatewayserver.filter;
 
-import com.skyhorsemanpower.gatewayserver.filter.AuthorizationHeaderFilter.Config;
 import com.skyhorsemanpower.gatewayserver.security.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -45,8 +44,21 @@ public class AdminHeaderFilter extends
             String authorizationHeader = headers.get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer ", "");
 
-            jwtTokenProvider.validateJwtToken(jwt);
 
+            jwtTokenProvider.adminValidateJwtToken(jwt);
+
+            // admin인지 아닌지 검증
+            Claims claims = jwtTokenProvider.getClaimsFromJwtToken(jwt);
+            String role = claims.get("role", String.class);
+            if (role == null || !role.equals("admin")) {
+                return onError(exchange, "admin 아님", HttpStatus.FORBIDDEN);
+            }
+
+            // 엑세스토큰 유효기간 검증
+            Date expiredTime = jwtTokenProvider.getExpiredTime(jwt);
+            if (expiredTime.before(new Date())) {
+                return onError(exchange, "토큰 만료", HttpStatus.UNAUTHORIZED);
+            }
 
             ServerHttpRequest newRequest = request.mutate()
                 .header("X-AUTH-TOKEN", jwt)

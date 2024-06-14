@@ -5,6 +5,7 @@ import com.skyhorsemanpower.gatewayserver.exception.ResponseStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -28,7 +29,7 @@ public class JwtTokenProvider {
     @Value("${JWT.SECRET_KEY}")
     private String SECRET;
 
-    private Claims getClaimsFromJwtToken(String token) {
+    public Claims getClaimsFromJwtToken(String token) {
         try {
             return Jwts.parserBuilder()
                 .setSigningKey(SECRET.getBytes())
@@ -47,6 +48,29 @@ public class JwtTokenProvider {
 		try {
 			Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
 			String tokenType = claimsJws.getBody().get("TokenType", String.class);
+			log.info("tokenType: {}", tokenType);
+			if ("refresh".equals(tokenType)) {
+				throw new CustomException(ResponseStatus.JWT_FAIL_WITH_REFRESH);
+			}
+		} catch (SignatureException e) {
+			throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
+		} catch (MalformedJwtException e) {
+			throw new CustomException(ResponseStatus.DAMAGED_TOKEN);
+		} catch (UnsupportedJwtException e) {
+			throw new CustomException(ResponseStatus.UNSUPPORTED_TOKEN);
+		} catch (ExpiredJwtException e) {
+			throw new CustomException(ResponseStatus.EXPIRED_TOKEN);
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(ResponseStatus.INVALID_TOKEN);
+		} catch (RuntimeException e) {
+			throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
+		}
+	}
+
+	public void adminValidateJwtToken(String token) {
+		try {
+			JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(SECRET).build();
+			String tokenType = jwtParser.parseClaimsJws(token).getBody().get("TokenType", String.class);
 			log.info("tokenType: {}", tokenType);
 			if ("refresh".equals(tokenType)) {
 				throw new CustomException(ResponseStatus.JWT_FAIL_WITH_REFRESH);
