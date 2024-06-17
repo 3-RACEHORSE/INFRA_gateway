@@ -66,27 +66,4 @@ public class JwtTokenProvider {
 			throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
 		}
 	}
-
-	public void adminValidateJwtToken(String token) {
-		try {
-			JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(SECRET).build();
-			String tokenType = jwtParser.parseClaimsJws(token).getBody().get("TokenType", String.class);
-			log.info("tokenType: {}", tokenType);
-			if ("refresh".equals(tokenType)) {
-				throw new CustomException(ResponseStatus.JWT_FAIL_WITH_REFRESH);
-			}
-		} catch (SignatureException e) {
-			throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
-		} catch (MalformedJwtException e) {
-			throw new CustomException(ResponseStatus.DAMAGED_TOKEN);
-		} catch (UnsupportedJwtException e) {
-			throw new CustomException(ResponseStatus.UNSUPPORTED_TOKEN);
-		} catch (ExpiredJwtException e) {
-			throw new CustomException(ResponseStatus.EXPIRED_TOKEN);
-		} catch (IllegalArgumentException e) {
-			throw new CustomException(ResponseStatus.INVALID_TOKEN);
-		} catch (RuntimeException e) {
-			throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
-		}
-	}
 }
