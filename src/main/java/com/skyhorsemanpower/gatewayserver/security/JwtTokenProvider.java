@@ -5,6 +5,7 @@ import com.skyhorsemanpower.gatewayserver.exception.ResponseStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -28,7 +29,7 @@ public class JwtTokenProvider {
     @Value("${JWT.SECRET_KEY}")
     private String SECRET;
 
-    private Claims getClaimsFromJwtToken(String token) {
+    public Claims getClaimsFromJwtToken(String token) {
         try {
             return Jwts.parserBuilder()
                 .setSigningKey(SECRET.getBytes())
