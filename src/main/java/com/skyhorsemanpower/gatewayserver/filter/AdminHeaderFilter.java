@@ -44,14 +44,15 @@ public class AdminHeaderFilter extends
             String authorizationHeader = headers.get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer ", "");
 
+
             jwtTokenProvider.validateJwtToken(jwt);
 
             // admin인지 아닌지 검증
-            Claims claims = jwtTokenProvider.getClaimsFromJwtToken(jwt);
-            String role = claims.get("role", String.class);
-            if (role == null || !role.equals("ROLE_admin")) {
-                return onError(exchange, "admin 아님", HttpStatus.FORBIDDEN);
-            }
+//            Claims claims = jwtTokenProvider.getClaimsFromJwtToken(jwt);
+//            String role = claims.get("role", String.class);
+//            if (role == null || !role.equals("ROLE_admin")) {
+//                return onError(exchange, "admin 아님", HttpStatus.FORBIDDEN);
+//            }
 
             ServerHttpRequest newRequest = request.mutate()
                 .header("X-AUTH-TOKEN", jwt)
