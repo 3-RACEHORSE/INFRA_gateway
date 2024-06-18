@@ -32,7 +32,7 @@ public class JwtTokenProvider {
     public Claims getClaimsFromJwtToken(String token) {
         try {
             return Jwts.parserBuilder()
-                .setSigningKey(SECRET.getBytes())
+                .setSigningKey(SECRET)
                 .build()
                 .parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
