@@ -49,7 +49,7 @@ public class AdminHeaderFilter extends
             // admin인지 아닌지 검증
             Claims claims = jwtTokenProvider.getClaimsFromJwtToken(jwt);
             String role = claims.get("role", String.class);
-            if (role == null || !role.equals("[ROLE_admin]")) {
+            if (role == null || !role.equals("ROLE_admin")) {
                 return onError(exchange, "admin 아님", HttpStatus.FORBIDDEN);
             }
 
