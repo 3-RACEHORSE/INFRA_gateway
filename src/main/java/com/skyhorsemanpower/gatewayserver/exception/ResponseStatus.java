@@ -21,7 +21,7 @@ public enum ResponseStatus {
     INVALID_TOKEN(401, "잘못된 토큰입니다."),
     JWT_FAIL_WITH_REFRESH(401, "Refresh 토큰은 사용할 수 없습니다."),
     VERIFICATION_FAILED(401, "검증에 실패한 토큰입니다."),
-    NOT_FOUND_TOKEN(404, "토큰이 없습니다.");
+    NOT_FOUND_TOKEN(401, "토큰이 없습니다.");
 
     private final int code;
     private final String message;

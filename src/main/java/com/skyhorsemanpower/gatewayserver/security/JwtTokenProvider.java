@@ -62,7 +62,7 @@ public class JwtTokenProvider {
 			throw new CustomException(ResponseStatus.EXPIRED_TOKEN);
 		} catch (IllegalArgumentException e) {
 			throw new CustomException(ResponseStatus.INVALID_TOKEN);
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
 		}
 	}
