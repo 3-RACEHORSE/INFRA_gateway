@@ -53,16 +53,22 @@ public class JwtTokenProvider {
 				throw new CustomException(ResponseStatus.JWT_FAIL_WITH_REFRESH);
 			}
 		} catch (SignatureException e) {
+			log.info("SignatureException >>>> {}", e.getMessage());
 			throw new CustomException(ResponseStatus.INVALID_SIGNATURE_TOKEN);
 		} catch (MalformedJwtException e) {
+			log.info("MalformedJwtException >>>> {}", e.getMessage());
 			throw new CustomException(ResponseStatus.DAMAGED_TOKEN);
 		} catch (UnsupportedJwtException e) {
+			log.info("UnsupportedJwtException >>>> {}", e.getMessage());
 			throw new CustomException(ResponseStatus.UNSUPPORTED_TOKEN);
 		} catch (ExpiredJwtException e) {
+			log.info("ExpiredJwtException >>>> {}", e.getMessage());
 			throw new CustomException(ResponseStatus.EXPIRED_TOKEN);
 		} catch (IllegalArgumentException e) {
+			log.info("IllegalArgumentException >>>> {}", e.getMessage());
 			throw new CustomException(ResponseStatus.INVALID_TOKEN);
 		} catch (Exception e) {
+			log.info("Exception >>>> {}", e.getMessage());
 			throw new CustomException(ResponseStatus.VERIFICATION_FAILED);
 		}
 	}

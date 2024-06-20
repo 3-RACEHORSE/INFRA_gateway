@@ -28,6 +28,7 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 
             if (config.isPreLogger()) {
                 log.info("Global Filter Start: request id -> {}", request.getId());
+                log.info(request.toString());
                 log.info("Global Filter Start: request path -> {}", request.getPath());
             }
             //Custom Post Filter
