@@ -86,7 +86,7 @@ jobs:
           sudo docker rm gateway-server        
 
       - name: Run new docker container
-        run: sudo docker run -d --restart unless-stopped --name gateway-server -p 8000:8000 --net cheonma-network ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
+        run: sudo docker run -d --name gateway-server -p 8000:8000 --net cheonma-network ${{ secrets.DOCKERHUB_USERNAME }}/gateway-server:latest
 
       - name: Delete old docker image
         run: sudo docker system prune -f
